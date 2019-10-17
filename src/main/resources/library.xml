@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration xmlns="http://www.jooq.org/xsd/jooq-codegen-3.11.0.xsd">
+    <!-- Configure the database connection here -->
+    <jdbc>
+        <!-- Dummy configurations for generating the classes in a local setup; these settings should not match real,
+        production settings -->
+        <driver>com.mysql.cj.jdbc.Driver</driver>
+        <url>jdbc:mysql://localhost:3306/dw2_reserva?useSSL=false&amp;serverTimezone=UTC</url>
+        <user>dw2_reserva</user>
+        <password></password>
+    </jdbc>
+
+    <generator>
+        <name>org.jooq.codegen.JavaGenerator</name>
+        <database>
+            <name>org.jooq.meta.mysql.MySQLDatabase</name>
+            <includes>.*</includes>
+            <!-- Ignore Flyway tables -->
+            <excludes>FLYWAY_SCHEMA_HISTORY</excludes>
+            <inputSchema>dw2_reserva</inputSchema>
+            <outputSchemaToDefault>true</outputSchemaToDefault>
+        </database>
+        <generate>
+            <globalObjectReferences>false</globalObjectReferences>
+            <javaTimeTypes>true</javaTimeTypes>
+        </generate>
+        <target>
+            <packageName>com.dw2.reserva.persistence.jooq</packageName>
+            <directory>src/main/java</directory>
+        </target>
+    </generator>
+</configuration>

@@ -1,0 +1,7 @@
+CREATE DATABASE dw2_reserva;
+CREATE USER dw2_reserva IDENTIFIED BY '';
+GRANT ALL ON dw2_reserva.* TO dw2_reserva;
+
+set MAVEN_OPTS= --add-modules java.xml.bind
+mvn clean install -Dskip.jooq.generation=false -DskipTests=true
+mvn clean install -Dskip.jooq.generation=false -Dmaven.test.skip=true

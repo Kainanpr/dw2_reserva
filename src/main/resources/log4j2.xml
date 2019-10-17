@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Log4J2 configuration file based on Spring Boot's log4j2-file.xml -->
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_LOCATION">${env:DW2_RESERVA_LOG_LOCATION:-.}</Property>
+        <Property name="LOG_FILE_NAME">${LOG_LOCATION}/dw2-reserva</Property>
+    </Properties>
+    <Appenders>
+        <RollingFile name="File" fileName="${LOG_FILE_NAME}.log" filePattern="${LOG_FILE_NAME}-%d{yyyy-MM-dd}.log.gz">
+            <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss.SSS} %X %5p %c{1}.%M:%L - %m%n%xwEx"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true"/>
+            </Policies>
+        </RollingFile>
+        <Console name="Console" target="SYSTEM_OUT" follow="true">
+            <PatternLayout pattern="%clr{%d{yyyy-MM-dd HH:mm:ss.SSS}}{faint} %X %clr{%5p} %clr{%c{1}.%M:%L}{cyan} %clr{-}{faint} %m%n%xwEx"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="com.dw2" level="${env:DW2_RESERVA_LOG_LEVEL:-info}"/>
+        <Logger name="org.apache.catalina.startup.DigesterFactory" level="error"/>
+        <Logger name="org.apache.catalina.util.LifecycleBase" level="error"/>
+        <Logger name="org.apache.coyote.http11.Http11NioProtocol" level="warn"/>
+        <Logger name="org.apache.sshd.common.util.SecurityUtils" level="warn"/>
+        <Logger name="org.apache.tomcat.util.net.NioSelectorPool" level="warn"/>
+        <Logger name="org.eclipse.jetty.util.component.AbstractLifeCycle" level="error"/>
+        <Logger name="org.hibernate.validator.internal.util.Version" level="warn"/>
+        <Logger name="org.springframework.boot.actuate.endpoint.jmx" level="warn"/>
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+            <AppenderRef ref="File"/>
+        </Root>
+    </Loggers>
+</Configuration>
