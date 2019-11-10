@@ -1,4 +1,4 @@
-package com.dw2.reserva.rest.dto.write;
+package com.dw2.reserva.controller.dto.write;
 
 import com.dw2.reserva.model.TypeEnum;
 import com.dw2.reserva.util.ObjectBuilder;
