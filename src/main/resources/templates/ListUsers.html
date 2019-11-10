@@ -10,36 +10,49 @@
 </head>
 
 <body>
-<div class="panel panel-default" style="margin: 10px">
-  <div class="panel-heading">
-    <h1 class="panel-title">Lista de usuários</h1>
+<div class="card" style="margin: 10px">
+  <div class="card-header">
+    <h3 class="card-title">Lista de usuários</h3>
   </div>
-  <div class="panel-body">
-    <form class="form-inline" method="POST" th:action="@{/users}" style="margin: 20px 0">
-      <div class="form-group">
-        <input type="text" class="form-control"
-               name="name" placeholder="Nome"/>
-        <input type="text" class="form-control"
-               name="email" placeholder="E-mail"/>
-        <input type="text" class="form-control"
-               name="cpf" placeholder="CPF"/>
-        <select class="form-control" name="type">
-          <option value="STUDENT">Student</option>
-          <option value="TEACHER">Teacher</option>
-        </select>
-        <button type="submit"
-                class="btn btn-primary">Adicionar
-        </button>
+  <div class="card-body">
+    <form method="POST" th:action="@{/users}" style="margin: 20px 0">
+      <div class="form-row">
+        <div class="col form-group">
+          <input type="text" class="form-control"
+                 name="name" placeholder="Nome"/>
+        </div>
+        <div class="col form-group">
+          <input type="text" class="form-control"
+                 name="email" placeholder="E-mail"/>
+        </div>
+
+        <div class="col form-group">
+          <input type="text" class="form-control"
+                 name="cpf" placeholder="CPF"/>
+        </div>
+
+        <div class="col-md-1 form-group">
+          <select class="form-control" name="type">
+            <option value="STUDENT">Student</option>
+            <option value="TEACHER">Teacher</option>
+          </select>
+        </div>
+
+        <div class="col form-group">
+          <button type="submit"
+                  class="btn btn-primary">Adicionar
+          </button>
+        </div>
       </div>
     </form>
-    <table class="table">
+    <table class="table table-striped">
       <thead>
       <tr>
-        <th>id</th>
-        <th>Nome</th>
-        <th>E-mail</th>
-        <th>CPF</th>
-        <th>Tipo</th>
+        <th scope="col">id</th>
+        <th scope="col">Nome</th>
+        <th scope="col">E-mail</th>
+        <th scope="col">CPF</th>
+        <th scope="col">Tipo</th>
       </tr>
       </thead>
       <tbody>
