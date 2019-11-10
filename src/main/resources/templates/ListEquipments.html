@@ -79,10 +79,10 @@
         <td th:text="${equipment.laboratory.name}"></td>
         <td>
           <div class="float-right">
-            <a class="btn btn-primary"
+            <a class="btn btn-primary text-white"
                th:data-equipment="${equipment}"
                th:onclick="javascript:showModalUpdateEquipment(this.getAttribute('data-equipment'))">Editar</a>
-            <a class="btn btn-danger"
+            <a class="btn btn-danger text-white"
                th:onclick="'javascript:deleteEquipment(' + ${equipment.id} + ')'">Excluir</a>
           </div>
         </td>

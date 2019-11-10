@@ -93,10 +93,10 @@
         <td th:text="${user.type}"></td>
         <td>
           <div class="float-right">
-            <a class="btn btn-primary"
+            <a class="btn btn-primary text-white"
                th:data-user="${user}"
                th:onclick="javascript:showModalUpdateUser(this.getAttribute('data-user'))">Editar</a>
-            <a class="btn btn-danger"
+            <a class="btn btn-danger text-white"
                th:onclick="'javascript:deleteUser(' + ${user.id} + ')'">Excluir</a>
           </div>
         </td>
