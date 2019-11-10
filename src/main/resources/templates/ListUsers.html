@@ -53,6 +53,7 @@
         <th scope="col">E-mail</th>
         <th scope="col">CPF</th>
         <th scope="col">Tipo</th>
+        <th scope="col">Ações</th>
       </tr>
       </thead>
       <tbody>
@@ -62,6 +63,13 @@
         <td th:text="${user.email}"></td>
         <td th:text="${user.cpf}"></td>
         <td th:text="${user.type}"></td>
+        <td>
+          <div class="float-right">
+            <a class="btn btn-primary">Editar</a>
+            <a class="btn btn-danger"
+               th:onclick="'javascript:deleteUser(' + ${user.id} + ')'">Excluir</a>
+          </div>
+        </td>
       </tr>
       </tbody>
     </table>
@@ -71,5 +79,24 @@
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+<script type="text/javascript">
+
+    function deleteUser(id) {
+        if (confirm("Deseja realmente excluir este registro?")) {
+            $.ajax({
+                url: '/users/delete/' + id,
+                type: 'GET',
+                success: function (result) {
+                    window.location = "/users";
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert("Erro: O usuário possui dados atrelados!");
+                }
+            });
+        }
+    }
+
+</script>
 </body>
 </html>

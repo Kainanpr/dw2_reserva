@@ -5,11 +5,10 @@ import com.dw2.reserva.model.User;
 import com.dw2.reserva.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 @CrossOrigin
@@ -42,5 +41,14 @@ public class UserController {
         LOGGER.info("User received to save: {}", user);
         userService.save(user);
         return "redirect:/users";
+    }
+
+    @GetMapping(value = "/delete/{id}")
+    public ResponseEntity<String> delete(@PathVariable("id") Integer id) {
+        LOGGER.info("ID received to delete: {}", id);
+        userService.delete(id);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
     }
 }
