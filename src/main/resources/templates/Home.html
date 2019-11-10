@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width"/>
+  <title>Login</title>
+  <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <div class="container">
+    <a class="navbar-brand" href="#">SISTEMA</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+      <ul class="navbar-nav">
+        <li class="nav-item active">
+          <a class="nav-link" href="./">Home<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./users">Usuários<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="./login.jsp">Logar</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">Sair</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<div class="container">
+  <div class="jumbotron mt-5">
+    <h1 class="display-4">Bem-vindo</h1>
+    <hr class="my-4">
+    <p class="lead">Sistema de Controle de Reservas</p>
+  </div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+</body>
+</html>
