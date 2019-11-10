@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width"/>
-  <title>Lista de Usuários</title>
+  <title>Lista de Equipamentos</title>
   <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
 </head>
 
@@ -21,13 +21,13 @@
         <li class="nav-item">
           <a class="nav-link" href="./">Home<span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item active">
+        <li class="nav-item">
           <a class="nav-link" href="./users">Usuários<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
           <a class="nav-link" href="./laboratories">Laboratórios<span class="sr-only">(current)</span></a>
         </li>
-        <li class="nav-item">
+        <li class="nav-item active">
           <a class="nav-link" href="./equipments">Equipamentos<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
@@ -40,29 +40,19 @@
 
 <div class="card m-5">
   <div class="card-header">
-    <h3 class="card-title">Lista de usuários</h3>
+    <h3 class="card-title">Lista de equipamentos</h3>
   </div>
   <div class="card-body">
-    <form method="POST" th:action="@{/users}" style="margin: 20px 0">
+    <form method="POST" th:action="@{/equipments}" style="margin: 20px 0">
       <div class="form-row">
         <div class="col form-group">
           <input type="text" class="form-control"
                  name="name" placeholder="Nome"/>
         </div>
-        <div class="col form-group">
-          <input type="text" class="form-control"
-                 name="email" placeholder="E-mail"/>
-        </div>
 
-        <div class="col form-group">
-          <input type="text" class="form-control"
-                 name="cpf" placeholder="CPF"/>
-        </div>
-
-        <div class="col-md-1 form-group">
-          <select class="form-control" name="type">
-            <option value="STUDENT">Student</option>
-            <option value="TEACHER">Teacher</option>
+        <div class="col-md-3 form-group">
+          <select class="form-control" name="laboratoryId">
+            <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}" th:text="${laboratory.name}"></option>
           </select>
         </div>
 
@@ -78,26 +68,22 @@
       <tr>
         <th scope="col">id</th>
         <th scope="col">Nome</th>
-        <th scope="col">E-mail</th>
-        <th scope="col">CPF</th>
-        <th scope="col">Tipo</th>
+        <th scope="col">Laboratório</th>
         <th scope="col">&nbsp;</th>
       </tr>
       </thead>
       <tbody>
-      <tr th:each="user : ${users}">
-        <td th:text="${user.id}"></td>
-        <td th:text="${user.name}"></td>
-        <td th:text="${user.email}"></td>
-        <td th:text="${user.cpf}"></td>
-        <td th:text="${user.type}"></td>
+      <tr th:each="equipment : ${equipments}">
+        <td th:text="${equipment.id}"></td>
+        <td th:text="${equipment.name}"></td>
+        <td th:text="${equipment.laboratory.name}"></td>
         <td>
           <div class="float-right">
             <a class="btn btn-primary"
-               th:data-user="${user}"
-               th:onclick="javascript:showModalUpdateUser(this.getAttribute('data-user'))">Editar</a>
+               th:data-equipment="${equipment}"
+               th:onclick="javascript:showModalUpdateEquipment(this.getAttribute('data-equipment'))">Editar</a>
             <a class="btn btn-danger"
-               th:onclick="'javascript:deleteUser(' + ${user.id} + ')'">Excluir</a>
+               th:onclick="'javascript:deleteEquipment(' + ${equipment.id} + ')'">Excluir</a>
           </div>
         </td>
       </tr>
@@ -128,25 +114,9 @@
                      name="name" placeholder="Nome"
                      id="nameUpdate"/>
             </div>
-
-            <div class="col form-group">
-              <input type="text" class="form-control"
-                     name="email" placeholder="E-mail"
-                     id="emailUpdate"/>
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="col form-group">
-              <input type="text" class="form-control"
-                     name="cpf" placeholder="CPF"
-                     id="cpfUpdate"/>
-            </div>
-
-            <div class="col form-group">
-              <select class="form-control" name="type" id="typeUpdate">
-                <option value="STUDENT">Student</option>
-                <option value="TEACHER">Teacher</option>
+            <div class="col-md-6 form-group">
+              <select class="form-control" name="laboratoryId" id="laboratoryIdUpdate"/>>
+                <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}" th:text="${laboratory.name}"></option>
               </select>
             </div>
           </div>
@@ -155,7 +125,7 @@
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
         <button type="button" class="btn btn-primary"
-                onclick="SaveUpdatesToUser()">Salvar mudanças
+                onclick="SaveUpdatesToEquipment()">Salvar mudanças
         </button>
       </div>
     </div>
@@ -167,63 +137,59 @@
 
 <script type="text/javascript">
 
-    function deleteUser(id) {
+    function deleteEquipment(id) {
         if (confirm("Deseja realmente excluir este registro?")) {
             $.ajax({
-                url: '/users/delete/' + id,
+                url: '/equipments/delete/' + id,
                 type: 'GET',
                 success: function (result) {
-                    window.location = "/users";
+                    window.location = "/equipments";
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
-                    alert("Erro: O usuário possui dados atrelados!");
+                    alert("Erro: O equipamento possui dados atrelados!");
                 }
             });
         }
     }
 
-    function updateUser(user) {
+    function updateEquipment(equipment) {
         $.ajax({
-            url: '/users/delete/' + id,
+            url: '/equipments/delete/' + id,
             type: 'GET',
             success: function (result) {
-                window.location = "/users";
+                window.location = "/equipments";
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: O usuário possui dados atrelados!");
+                alert("Erro: O equipamento possui dados atrelados!");
             }
         });
     }
 
-    function showModalUpdateUser(userJson) {
-        var user = JSON.parse(userJson);
+    function showModalUpdateEquipment(equipmentJson) {
+        var equipment = JSON.parse(equipmentJson);
         $('#modalUpdate').modal('show');
-        $('#idUpdate').val(user.id);
-        $('#nameUpdate').val(user.name);
-        $('#emailUpdate').val(user.email);
-        $('#cpfUpdate').val(user.cpf);
-        $('#typeUpdate').val(user.type);
+        $('#idUpdate').val(equipment.id);
+        $('#nameUpdate').val(equipment.name);
+        $('#laboratoryIdUpdate').val(equipment.laboratory.id);
     }
 
-    function SaveUpdatesToUser() {
+    function SaveUpdatesToEquipment() {
         $('#modalUpdate').modal('hide');
 
         var id = $('#idUpdate').val();
         var name = $('#nameUpdate').val();
-        var email = $('#emailUpdate').val();
-        var cpf = $('#cpfUpdate').val();
-        var type = $('#typeUpdate').val();
+        var laboratoryId = $('#laboratoryIdUpdate').val();
 
         $.ajax({
-            url: '/users/update/' + id,
+            url: '/equipments/update/' + id,
             type: 'POST',
-            data: {name: name, email: email, cpf: cpf, type: type},
+            data: {name: name, laboratoryId: laboratoryId },
             success: function (result) {
-                alert("Usuário editado com sucesso!");
-                window.location = "/users";
+                alert("Equipamento editado com sucesso!");
+                window.location = "/equipments";
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: Não foi possível editar o usuário!");
+                alert("Erro: Não foi possível editar o equipamento!");
             }
         });
     }
