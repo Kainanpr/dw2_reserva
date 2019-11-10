@@ -1,6 +1,8 @@
 package com.dw2.reserva.model;
 
 import com.dw2.reserva.util.ObjectBuilder;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.Objects;
 
@@ -58,13 +60,12 @@ public final class User {
 
     @Override
     public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", cpf='" + cpf + '\'' +
-                ", type=" + type +
-                '}';
+        final ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error converting user to json", e);
+        }
     }
 
     public static final class Builder implements ObjectBuilder {

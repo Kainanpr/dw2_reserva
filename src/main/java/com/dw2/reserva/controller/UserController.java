@@ -51,4 +51,21 @@ public class UserController {
                 .status(HttpStatus.OK)
                 .build();
     }
+
+    @PostMapping(value = "/update/{id}")
+    public ResponseEntity<String> update(@PathVariable("id") Integer id, String name, String email, String cpf, TypeEnum type) {
+        final User user = new User.Builder()
+                .setId(id)
+                .setName(name)
+                .setEmail(email)
+                .setCpf(cpf)
+                .setType(type)
+                .build();
+        LOGGER.info("ID received to update: {}", id);
+        LOGGER.info("User received to update: {}", user);
+        userService.update(user);
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .build();
+    }
 }

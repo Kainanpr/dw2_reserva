@@ -64,7 +64,9 @@
         <td th:text="${user.type}"></td>
         <td>
           <div class="float-right">
-            <a class="btn btn-primary">Editar</a>
+            <a class="btn btn-primary"
+               th:data-user="${user}"
+               th:onclick="javascript:showModalUpdateUser(this.getAttribute('data-user'))">Editar</a>
             <a class="btn btn-danger"
                th:onclick="'javascript:deleteUser(' + ${user.id} + ')'">Excluir</a>
           </div>
@@ -75,6 +77,61 @@
   </div>
 </div>
 
+<!-- Modal -->
+<div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Editando usuário</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form method="POST" th:action="@{/users}" style="margin: 20px 0">
+          <div class="form-row">
+            <div class="col form-group">
+              <input type="hidden" class="form-control"
+                     name="id" placeholder="id"
+                     id="idUpdate"/>
+              <input type="text" class="form-control"
+                     name="name" placeholder="Nome"
+                     id="nameUpdate"/>
+            </div>
+
+            <div class="col form-group">
+              <input type="text" class="form-control"
+                     name="email" placeholder="E-mail"
+                     id="emailUpdate"/>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="col form-group">
+              <input type="text" class="form-control"
+                     name="cpf" placeholder="CPF"
+                     id="cpfUpdate"/>
+            </div>
+
+            <div class="col form-group">
+              <select class="form-control" name="type" id="typeUpdate">
+                <option value="STUDENT">Student</option>
+                <option value="TEACHER">Teacher</option>
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        <button type="button" class="btn btn-primary"
+                onclick="SaveUpdatesToUser()">Salvar mudanças
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
@@ -94,6 +151,52 @@
                 }
             });
         }
+    }
+
+    function updateUser(user) {
+        $.ajax({
+            url: '/users/delete/' + id,
+            type: 'GET',
+            success: function (result) {
+                window.location = "/users";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: O usuário possui dados atrelados!");
+            }
+        });
+    }
+
+    function showModalUpdateUser(userJson) {
+        var user = JSON.parse(userJson);
+        $('#modalUpdate').modal('show');
+        $('#idUpdate').val(user.id);
+        $('#nameUpdate').val(user.name);
+        $('#emailUpdate').val(user.email);
+        $('#cpfUpdate').val(user.cpf);
+        $('#typeUpdate').val(user.type);
+    }
+
+    function SaveUpdatesToUser() {
+        $('#modalUpdate').modal('hide');
+
+        var id = $('#idUpdate').val();
+        var name = $('#nameUpdate').val();
+        var email = $('#emailUpdate').val();
+        var cpf = $('#cpfUpdate').val();
+        var type = $('#typeUpdate').val();
+
+        $.ajax({
+            url: '/users/update/' + id,
+            type: 'POST',
+            data: {name: name, email: email, cpf: cpf, type: type},
+            success: function (result) {
+                alert("Usuário editado com sucesso!");
+                window.location = "/users";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível editar o usuário!");
+            }
+        });
     }
 
 </script>
