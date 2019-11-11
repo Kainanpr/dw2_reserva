@@ -22,7 +22,7 @@ public class AuthenticationInterceptor extends HandlerInterceptorAdapter {
             return true;
         }
 
-        if (uri.endsWith("login")) {
+        if (uri.endsWith("login") || uri.contains("webjars")) {
             return true;
         }
 
