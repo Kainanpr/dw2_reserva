@@ -1,4 +1,4 @@
-package com.dw2.reserva.authentication;
+package com.dw2.reserva.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
