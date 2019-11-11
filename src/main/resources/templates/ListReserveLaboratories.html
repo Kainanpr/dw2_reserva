@@ -164,7 +164,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary"
-                        onclick="SaveUpdatesToReserveLaboratory()">Salvar mudanças
+                        onclick="saveUpdatesToReserveLaboratory()">Salvar mudanças
                 </button>
             </div>
         </div>
@@ -202,7 +202,7 @@
         $('#laboratoryIdUpdate').val(reserveLaboratory.laboratory.id);
     }
 
-    function SaveUpdatesToReserveLaboratory() {
+    function saveUpdatesToReserveLaboratory() {
         $('#modalUpdate').modal('hide');
 
         var id = $('#idUpdate').val();

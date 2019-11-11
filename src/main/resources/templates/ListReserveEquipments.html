@@ -49,7 +49,7 @@
         <h3 class="card-title">Lista de reserva de equipamentos</h3>
     </div>
     <div class="card-body">
-        <form method="POST" th:action="@{/reserve-equipments}" style="margin: 20px 0">
+        <form style="margin: 20px 0">
             <div class="form-row">
                 <div class="col form-group">
                     <input type="datetime-local" class="form-control"
@@ -65,13 +65,13 @@
                 </div>
 
                 <div class="col-md-3 form-group">
-                    <select class="form-control" name="userId">
+                    <select class="form-control" name="userId" id="userId">
                         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-3 form-group">
-                    <select class="form-control" name="equipmentId">
+                    <select class="form-control" name="equipmentId" id="equipmentId">
                         <option th:each="equipment : ${equipments}" th:value="${equipment.id}"
                                 th:text="${equipment.name}"></option>
                     </select>
@@ -79,7 +79,8 @@
 
                 <div class="col form-group">
                     <button type="submit"
-                            class="btn btn-primary">Adicionar
+                            class="btn btn-primary"
+                            onclick="saveReserveEquipment()">Adicionar
                     </button>
                 </div>
             </div>
@@ -170,7 +171,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary"
-                        onclick="SaveUpdatesToReserveEquipment()">Salvar mudanças
+                        onclick="saveUpdatesToReserveEquipment()">Salvar mudanças
                 </button>
             </div>
         </div>
@@ -191,6 +192,26 @@
     function handleUpdateStartDateChange() {
         var startDateUpdate = $('#startDateUpdate').val();
         $('#endDateUpdate').val(moment(startDateUpdate).add(1, 'hours').format('YYYY-MM-DDTHH:mm'));
+    }
+
+    function saveReserveEquipment() {
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+        var userId = $('#userId').val();
+        var equipmentId = $('#equipmentId').val();
+
+        $.ajax({
+            url: '/reserve-equipments',
+            type: 'POST',
+            data: {startDate: startDate, endDate: endDate, userId: userId, equipmentId: equipmentId},
+            success: function (result) {
+                alert("Reserva adicionada com sucesso!");
+                window.location = "/reserve-equipments";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível adicionar a reserva!");
+            }
+        });
     }
 
     function deleteReserveEquipment(id) {
@@ -218,7 +239,7 @@
         $('#equipmentIdUpdate').val(reserveEquipment.equipment.id);
     }
 
-    function SaveUpdatesToReserveEquipment() {
+    function saveUpdatesToReserveEquipment() {
         $('#modalUpdate').modal('hide');
 
         var id = $('#idUpdate').val();
