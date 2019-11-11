@@ -31,6 +31,9 @@
           <a class="nav-link" href="./equipments">Equipamentos<span class="sr-only">(current)</span></a>
         </li>
         <li class="nav-item">
+          <a class="nav-link" href="./reserve-laboratories">Reserva de laborátorios<span class="sr-only">(current)</span></a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="./logout">Sair</a>
         </li>
       </ul>
@@ -90,7 +93,7 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Editando usuário</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Editando laboratório</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
           <span aria-hidden="true">&times;</span>
         </button>
@@ -137,19 +140,6 @@
                 }
             });
         }
-    }
-
-    function updateLaboratory(laboratory) {
-        $.ajax({
-            url: '/laboratories/delete/' + id,
-            type: 'GET',
-            success: function (result) {
-                window.location = "/laboratories";
-            },
-            error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: O laboratório possui dados atrelados!");
-            }
-        });
     }
 
     function showModalUpdateLaboratory(laboratoryJson) {

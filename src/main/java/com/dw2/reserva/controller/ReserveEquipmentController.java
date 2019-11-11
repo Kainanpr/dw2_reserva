@@ -8,6 +8,7 @@ import com.dw2.reserva.service.ReserveEquipmentService;
 import com.dw2.reserva.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -42,7 +43,9 @@ public class ReserveEquipmentController {
     }
 
     @PostMapping
-    public String save(LocalDateTime startDate, LocalDateTime endDate, Integer userId, Integer equipmentId) {
+    public String save(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                       Integer userId, Integer equipmentId) {
         final User user = new User.Builder()
                 .setId(userId)
                 .build();
@@ -70,7 +73,10 @@ public class ReserveEquipmentController {
     }
 
     @PostMapping(value = "/update/{id}")
-    public ResponseEntity<String> update(@PathVariable("id") Integer id, LocalDateTime startDate, LocalDateTime endDate, Integer userId, Integer equipmentId) {
+    public ResponseEntity<String> update(@PathVariable("id") Integer id,
+                                         @RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                         @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                         Integer userId, Integer equipmentId) {
         final User user = new User.Builder()
                 .setId(userId)
                 .build();

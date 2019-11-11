@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width"/>
+    <title>Lista de Reserva de Laboratórios</title>
+    <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">SISTEMA</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="./">Home<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./users">Usuários<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./laboratories">Laboratórios<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./equipments">Equipamentos<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="./reserve-laboratories">Reserva de laborátorios<span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="./logout">Sair</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="card m-5">
+    <div class="card-header">
+        <h3 class="card-title">Lista de reserva de laboratórios</h3>
+    </div>
+    <div class="card-body">
+        <form method="POST" th:action="@{/reserve-laboratories}" style="margin: 20px 0">
+            <div class="form-row">
+                <div class="col form-group">
+                    <input type="datetime-local" class="form-control"
+                           name="startDate" placeholder="dd/mm/yyyy HH:mm"/>
+                </div>
+
+                <div class="col form-group">
+                    <input type="datetime-local" class="form-control"
+                           name="endDate" placeholder="dd/mm/yyyy HH:mm"/>
+                </div>
+
+                <div class="col-md-3 form-group">
+                    <select class="form-control" name="userId">
+                        <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
+                    </select>
+                </div>
+
+                <div class="col-md-3 form-group">
+                    <select class="form-control" name="laboratoryId">
+                        <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}"
+                                th:text="${laboratory.name}"></option>
+                    </select>
+                </div>
+
+                <div class="col form-group">
+                    <button type="submit"
+                            class="btn btn-primary">Adicionar
+                    </button>
+                </div>
+            </div>
+        </form>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">id</th>
+                <th scope="col">Entrada</th>
+                <th scope="col">Saída</th>
+                <th scope="col">Usuário</th>
+                <th scope="col">Laboratório</th>
+                <th scope="col">&nbsp;</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="reserveLaboratory : ${reserveLaboratories}">
+                <td th:text="${reserveLaboratory.id}"></td>
+                <td th:text="${reserveLaboratory.startDate}"></td>
+                <td th:text="${reserveLaboratory.endDate}"></td>
+                <td th:text="${reserveLaboratory.user.name}"></td>
+                <td th:text="${reserveLaboratory.laboratory.name}"></td>
+                <td>
+                    <div class="float-right">
+                        <a class="btn btn-primary text-white"
+                           th:data-reserveLaboratory="${reserveLaboratory}"
+                           th:onclick="javascript:showModalUpdateReserveLaboratory(this.getAttribute('data-reserveLaboratory'))">Editar</a>
+                        <a class="btn btn-danger text-white"
+                           th:onclick="'javascript:deleteReserveLaboratory(' + ${reserveLaboratory.id} + ')'">Excluir</a>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modalUpdate" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Editando reserva</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form style="margin: 20px 0">
+                    <div class="form-row">
+                        <div class="col-md-6 form-group">
+                            <input type="hidden" class="form-control"
+                                   name="id" placeholder="id"
+                                   id="idUpdate"/>
+                            <input type="datetime-local" class="form-control"
+                                   name="startDate" placeholder="dd/mm/yyyy HH:mm"
+                                   id="startDateUpdate"/>
+                        </div>
+
+                        <div class="col-md-6 form-group">
+                            <input type="datetime-local" class="form-control"
+                                   name="endDateUpdate" placeholder="dd/mm/yyyy HH:mm"
+                                   id="endDateUpdate"/>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="col form-group">
+                            <select class="form-control" name="laboratoryId" id="laboratoryIdUpdate"/>>
+                            <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}"
+                                    th:text="${laboratory.name}"></option>
+                            </select>
+                        </div>
+
+                        <div class="col form-group">
+                            <select class="form-control" name="laboratoryId" id="userIdUpdate"/>>
+                            <option th:each="user : ${users}" th:value="${user.id}"
+                                    th:text="${user.name}"></option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary"
+                        onclick="SaveUpdatesToReserveLaboratory()">Salvar mudanças
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:src="@{/webjars/jquery/jquery.min.js}"></script>
+<script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+
+<script type="text/javascript">
+
+    function deleteReserveLaboratory(id) {
+        if (confirm("Deseja realmente excluir este registro?")) {
+            $.ajax({
+                url: '/reserve-laboratories/delete/' + id,
+                type: 'GET',
+                success: function (result) {
+                    window.location = "/reserve-laboratories";
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    alert("Erro: A reserva possui dados atrelados!");
+                }
+            });
+        }
+    }
+
+    function showModalUpdateReserveLaboratory(reserveLaboratoryJson) {
+        var reserveLaboratory = JSON.parse(reserveLaboratoryJson);
+        $('#modalUpdate').modal('show');
+        $('#idUpdate').val(reserveLaboratory.id);
+        $('#startDateUpdate').val(reserveLaboratory.startDate);
+        $('#endDateUpdate').val(reserveLaboratory.endDate);
+        $('#userIdUpdate').val(reserveLaboratory.user.id);
+        $('#laboratoryIdUpdate').val(reserveLaboratory.laboratory.id);
+    }
+
+    function SaveUpdatesToReserveLaboratory() {
+        $('#modalUpdate').modal('hide');
+
+        var id = $('#idUpdate').val();
+        var startDate = $('#startDateUpdate').val();
+        var endDate = $('#endDateUpdate').val();
+        var userId = $('#userIdUpdate').val();
+        var laboratoryId = $('#laboratoryIdUpdate').val();
+
+        $.ajax({
+            url: '/reserve-laboratories/update/' + id,
+            type: 'POST',
+            data: {startDate: startDate, endDate: endDate, userId: userId, laboratoryId: laboratoryId},
+            success: function (result) {
+                alert("Reserva editada com sucesso!");
+                window.location = "/reserve-laboratories";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível editar a reserva!");
+            }
+        });
+    }
+
+</script>
+</body>
+</html>
