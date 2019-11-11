@@ -53,12 +53,15 @@
             <div class="form-row">
                 <div class="col form-group">
                     <input type="datetime-local" class="form-control"
-                           name="startDate" placeholder="dd/mm/yyyy HH:mm"/>
+                           id="startDate"
+                           name="startDate" placeholder="dd/mm/yyyy HH:mm"
+                           onchange="handleAddStartDateChange()"/>
                 </div>
 
                 <div class="col form-group">
                     <input type="datetime-local" class="form-control"
-                           name="endDate" placeholder="dd/mm/yyyy HH:mm"/>
+                           id="endDate"
+                           name="endDate" placeholder="dd/mm/yyyy HH:mm" disabled/>
                 </div>
 
                 <div class="col-md-3 form-group">
@@ -136,13 +139,14 @@
                                    id="idUpdate"/>
                             <input type="datetime-local" class="form-control"
                                    name="startDate" placeholder="dd/mm/yyyy HH:mm"
-                                   id="startDateUpdate"/>
+                                   id="startDateUpdate"
+                                   onchange="handleUpdateStartDateChange()"/>
                         </div>
 
                         <div class="col-md-6 form-group">
                             <input type="datetime-local" class="form-control"
                                    name="endDateUpdate" placeholder="dd/mm/yyyy HH:mm"
-                                   id="endDateUpdate"/>
+                                   id="endDateUpdate" disabled/>
                         </div>
                     </div>
 
@@ -175,8 +179,19 @@
 
 <script th:src="@{/webjars/jquery/jquery.min.js}"></script>
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/momentjs/2.24.0/moment.js}"></script>
 
 <script type="text/javascript">
+
+    function handleAddStartDateChange() {
+        var startDate = $('#startDate').val();
+        $('#endDate').val(moment(startDate).add(1, 'hours').format('YYYY-MM-DDTHH:mm'));
+    }
+
+    function handleUpdateStartDateChange() {
+        var startDateUpdate = $('#startDateUpdate').val();
+        $('#endDateUpdate').val(moment(startDateUpdate).add(1, 'hours').format('YYYY-MM-DDTHH:mm'));
+    }
 
     function deleteReserveEquipment(id) {
         if (confirm("Deseja realmente excluir este registro?")) {
@@ -198,7 +213,7 @@
         $('#modalUpdate').modal('show');
         $('#idUpdate').val(reserveEquipment.id);
         $('#startDateUpdate').val(reserveEquipment.startDate);
-        $('#endDateUpdate').val(reserveEquipment.endDate);
+        $('#endDateUpdate').val(moment(reserveEquipment.startDate).add(1, 'hours').format('YYYY-MM-DDTHH:mm'));
         $('#userIdUpdate').val(reserveEquipment.user.id);
         $('#equipmentIdUpdate').val(reserveEquipment.equipment.id);
     }
