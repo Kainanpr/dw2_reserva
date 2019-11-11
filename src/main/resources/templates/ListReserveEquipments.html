@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width"/>
-    <title>Lista de Reserva de Laboratórios</title>
+    <title>Lista de Reserva de Equipamentos</title>
     <link th:href="@{/webjars/bootstrap/css/bootstrap.min.css}" rel="stylesheet"/>
 </head>
 
@@ -30,10 +30,10 @@
                 <li class="nav-item">
                     <a class="nav-link" href="./equipments">Equipamentos<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
+                <li class="nav-item">
                     <a class="nav-link" href="./reserve-laboratories">Reserva de laborátorios<span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a class="nav-link" href="./reserve-equipments">Reserva de equipamentos<span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item">
@@ -46,10 +46,10 @@
 
 <div class="card m-5">
     <div class="card-header">
-        <h3 class="card-title">Lista de reserva de laboratórios</h3>
+        <h3 class="card-title">Lista de reserva de equipamentos</h3>
     </div>
     <div class="card-body">
-        <form method="POST" th:action="@{/reserve-laboratories}" style="margin: 20px 0">
+        <form method="POST" th:action="@{/reserve-equipments}" style="margin: 20px 0">
             <div class="form-row">
                 <div class="col form-group">
                     <input type="datetime-local" class="form-control"
@@ -68,9 +68,9 @@
                 </div>
 
                 <div class="col-md-3 form-group">
-                    <select class="form-control" name="laboratoryId">
-                        <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}"
-                                th:text="${laboratory.name}"></option>
+                    <select class="form-control" name="equipmentId">
+                        <option th:each="equipment : ${equipments}" th:value="${equipment.id}"
+                                th:text="${equipment.name}"></option>
                     </select>
                 </div>
 
@@ -89,23 +89,25 @@
                 <th scope="col">Saída</th>
                 <th scope="col">Usuário</th>
                 <th scope="col">Laboratório</th>
+                <th scope="col">Equipamento</th>
                 <th scope="col">&nbsp;</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="reserveLaboratory : ${reserveLaboratories}">
-                <td th:text="${reserveLaboratory.id}"></td>
-                <td th:text="${reserveLaboratory.startDate}"></td>
-                <td th:text="${reserveLaboratory.endDate}"></td>
-                <td th:text="${reserveLaboratory.user.name}"></td>
-                <td th:text="${reserveLaboratory.laboratory.name}"></td>
+            <tr th:each="reserveEquipment : ${reserveEquipments}">
+                <td th:text="${reserveEquipment.id}"></td>
+                <td th:text="${reserveEquipment.startDate}"></td>
+                <td th:text="${reserveEquipment.endDate}"></td>
+                <td th:text="${reserveEquipment.user.name}"></td>
+                <td th:text="${reserveEquipment.equipment.laboratory.name}"></td>
+                <td th:text="${reserveEquipment.equipment.name}"></td>
                 <td>
                     <div class="float-right">
                         <a class="btn btn-primary text-white"
-                           th:data-reserveLaboratory="${reserveLaboratory}"
-                           th:onclick="javascript:showModalUpdateReserveLaboratory(this.getAttribute('data-reserveLaboratory'))">Editar</a>
+                           th:data-reserveEquipment="${reserveEquipment}"
+                           th:onclick="javascript:showModalUpdateReserveEquipment(this.getAttribute('data-reserveEquipment'))">Editar</a>
                         <a class="btn btn-danger text-white"
-                           th:onclick="'javascript:deleteReserveLaboratory(' + ${reserveLaboratory.id} + ')'">Excluir</a>
+                           th:onclick="'javascript:deleteReserveEquipment(' + ${reserveEquipment.id} + ')'">Excluir</a>
                     </div>
                 </td>
             </tr>
@@ -146,9 +148,9 @@
 
                     <div class="form-row">
                         <div class="col form-group">
-                            <select class="form-control" name="laboratoryId" id="laboratoryIdUpdate"/>>
-                            <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}"
-                                    th:text="${laboratory.name}"></option>
+                            <select class="form-control" name="equipmentId" id="equipmentIdUpdate"/>>
+                            <option th:each="equipment : ${equipments}" th:value="${equipment.id}"
+                                    th:text="${equipment.name}"></option>
                             </select>
                         </div>
 
@@ -164,7 +166,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 <button type="button" class="btn btn-primary"
-                        onclick="SaveUpdatesToReserveLaboratory()">Salvar mudanças
+                        onclick="SaveUpdatesToReserveEquipment()">Salvar mudanças
                 </button>
             </div>
         </div>
@@ -176,13 +178,13 @@
 
 <script type="text/javascript">
 
-    function deleteReserveLaboratory(id) {
+    function deleteReserveEquipment(id) {
         if (confirm("Deseja realmente excluir este registro?")) {
             $.ajax({
-                url: '/reserve-laboratories/delete/' + id,
+                url: '/reserve-equipments/delete/' + id,
                 type: 'GET',
                 success: function (result) {
-                    window.location = "/reserve-laboratories";
+                    window.location = "/reserve-equipments";
                 },
                 error: function (xhr, ajaxOptions, thrownError) {
                     alert("Erro: A reserva possui dados atrelados!");
@@ -191,32 +193,32 @@
         }
     }
 
-    function showModalUpdateReserveLaboratory(reserveLaboratoryJson) {
-        var reserveLaboratory = JSON.parse(reserveLaboratoryJson);
+    function showModalUpdateReserveEquipment(reserveEquipmentJson) {
+        var reserveEquipment = JSON.parse(reserveEquipmentJson);
         $('#modalUpdate').modal('show');
-        $('#idUpdate').val(reserveLaboratory.id);
-        $('#startDateUpdate').val(reserveLaboratory.startDate);
-        $('#endDateUpdate').val(reserveLaboratory.endDate);
-        $('#userIdUpdate').val(reserveLaboratory.user.id);
-        $('#laboratoryIdUpdate').val(reserveLaboratory.laboratory.id);
+        $('#idUpdate').val(reserveEquipment.id);
+        $('#startDateUpdate').val(reserveEquipment.startDate);
+        $('#endDateUpdate').val(reserveEquipment.endDate);
+        $('#userIdUpdate').val(reserveEquipment.user.id);
+        $('#equipmentIdUpdate').val(reserveEquipment.equipment.id);
     }
 
-    function SaveUpdatesToReserveLaboratory() {
+    function SaveUpdatesToReserveEquipment() {
         $('#modalUpdate').modal('hide');
 
         var id = $('#idUpdate').val();
         var startDate = $('#startDateUpdate').val();
         var endDate = $('#endDateUpdate').val();
         var userId = $('#userIdUpdate').val();
-        var laboratoryId = $('#laboratoryIdUpdate').val();
+        var equipmentId = $('#equipmentIdUpdate').val();
 
         $.ajax({
-            url: '/reserve-laboratories/update/' + id,
+            url: '/reserve-equipments/update/' + id,
             type: 'POST',
-            data: {startDate: startDate, endDate: endDate, userId: userId, laboratoryId: laboratoryId},
+            data: {startDate: startDate, endDate: endDate, userId: userId, equipmentId: equipmentId},
             success: function (result) {
                 alert("Reserva editada com sucesso!");
-                window.location = "/reserve-laboratories";
+                window.location = "/reserve-equipments";
             },
             error: function (xhr, ajaxOptions, thrownError) {
                 alert("Erro: Não foi possível editar a reserva!");
