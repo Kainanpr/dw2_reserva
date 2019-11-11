@@ -3,6 +3,8 @@ package com.dw2.reserva.model;
 import com.dw2.reserva.util.ObjectBuilder;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -61,7 +63,9 @@ public final class ReserveEquipment {
 
     @Override
     public String toString() {
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper()
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .registerModule(new JavaTimeModule());
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {

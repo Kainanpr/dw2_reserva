@@ -11,4 +11,4 @@ create table reserve_equipment (
 
 insert into reserve_equipment (id, start_date, end_date, user_id, equipment_id) values
 (1, '2019-10-10 10:00:00', '2019-10-10 11:00:00', 3, 1),
-(2, '2019-11-10 09:30:20', '2019-11-10 10:30:20', 4, 2);
+(2, '2019-11-10 09:30:00', '2019-11-10 10:30:00', 4, 2);

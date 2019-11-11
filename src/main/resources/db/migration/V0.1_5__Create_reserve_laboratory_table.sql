@@ -11,4 +11,4 @@ create table reserve_laboratory (
 
 insert into reserve_laboratory (id, start_date, end_date, user_id, laboratory_id) values
 (1, '2019-10-20 10:00:00', '2019-10-20 15:00:00', 1, 2),
-(2, '2019-11-20 09:30:20', '2019-11-20 13:30:20', 2, 1);
+(2, '2019-11-20 09:30:00', '2019-11-20 13:30:00', 2, 1);
