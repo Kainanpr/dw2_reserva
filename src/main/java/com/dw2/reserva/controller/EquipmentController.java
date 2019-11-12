@@ -35,7 +35,7 @@ public class EquipmentController {
     }
 
     @PostMapping
-    public String save(String name, Integer laboratoryId) {
+    public ResponseEntity<String> save(String name, Integer laboratoryId) {
         final Laboratory laboratory = new Laboratory.Builder()
                 .setId(laboratoryId)
                 .build();
@@ -45,7 +45,9 @@ public class EquipmentController {
                 .build();
         LOGGER.info("Equipment received to save: {}", equipment);
         equipmentService.save(equipment);
-        return "redirect:/equipments";
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 
     @GetMapping(value = "/delete/{id}")

@@ -49,22 +49,24 @@
     <h3 class="card-title">Lista de equipamentos</h3>
   </div>
   <div class="card-body">
-    <form method="POST" th:action="@{/equipments}" style="margin: 20px 0">
+    <form style="margin: 20px 0">
       <div class="form-row">
         <div class="col form-group">
           <input type="text" class="form-control"
+                 id="name"
                  name="name" placeholder="Nome"/>
         </div>
 
         <div class="col-md-3 form-group">
-          <select class="form-control" name="laboratoryId">
+          <select class="form-control" name="laboratoryId" id="laboratoryId">
             <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}" th:text="${laboratory.name}"></option>
           </select>
         </div>
 
         <div class="col form-group">
           <button type="submit"
-                  class="btn btn-primary">Adicionar
+                  class="btn btn-primary"
+                  onclick="saveEquipment()">Adicionar
           </button>
         </div>
       </div>
@@ -142,6 +144,24 @@
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
 <script type="text/javascript">
+
+    function saveEquipment() {
+        var name = $('#name').val();
+        var laboratoryId = $('#laboratoryId').val();
+
+        $.ajax({
+            url: '/equipments',
+            type: 'POST',
+            data: {name: name, laboratoryId: laboratoryId},
+            success: function (result) {
+                alert("Equipamento adicionado com sucesso!");
+                window.location = "/equipments";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível adicionar o equipamento!");
+            }
+        });
+    }
 
     function deleteEquipment(id) {
         if (confirm("Deseja realmente excluir este registro?")) {
