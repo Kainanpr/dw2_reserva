@@ -43,9 +43,9 @@ public class ReserveLaboratoryController {
     }
 
     @PostMapping
-    public String save(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
-                       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
-                       Integer userId, Integer laboratoryId) {
+    public ResponseEntity<String> save(@RequestParam("startDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
+                                       @RequestParam("endDate") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate,
+                                       Integer userId, Integer laboratoryId) {
         final User user = new User.Builder()
                 .setId(userId)
                 .build();
@@ -60,7 +60,9 @@ public class ReserveLaboratoryController {
                 .build();
         LOGGER.info("ReserveLaboratory received to save: {}", reserveLaboratory);
         reserveLaboratoryService.save(reserveLaboratory);
-        return "redirect:/reserve-laboratories";
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 
     @GetMapping(value = "/delete/{id}")

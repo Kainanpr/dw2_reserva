@@ -49,26 +49,28 @@
         <h3 class="card-title">Lista de reserva de laboratórios</h3>
     </div>
     <div class="card-body">
-        <form method="POST" th:action="@{/reserve-laboratories}" style="margin: 20px 0">
+        <form style="margin: 20px 0">
             <div class="form-row">
                 <div class="col form-group">
                     <input type="datetime-local" class="form-control"
+                           id="startDate"
                            name="startDate" placeholder="dd/mm/yyyy HH:mm"/>
                 </div>
 
                 <div class="col form-group">
                     <input type="datetime-local" class="form-control"
+                           id="endDate"
                            name="endDate" placeholder="dd/mm/yyyy HH:mm"/>
                 </div>
 
                 <div class="col-md-3 form-group">
-                    <select class="form-control" name="userId">
+                    <select class="form-control" name="userId" id="userId">
                         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-3 form-group">
-                    <select class="form-control" name="laboratoryId">
+                    <select class="form-control" name="laboratoryId" id="laboratoryId">
                         <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}"
                                 th:text="${laboratory.name}"></option>
                     </select>
@@ -76,7 +78,8 @@
 
                 <div class="col form-group">
                     <button type="submit"
-                            class="btn btn-primary">Adicionar
+                            class="btn btn-primary"
+                            onclick="saveReserveEquipment()">Adicionar
                     </button>
                 </div>
             </div>
@@ -176,6 +179,26 @@
 <script th:src="@{/webjars/momentjs/2.24.0/moment.js}"></script>
 
 <script type="text/javascript">
+
+    function saveReserveEquipment() {
+        var startDate = $('#startDate').val();
+        var endDate = $('#endDate').val();
+        var userId = $('#userId').val();
+        var laboratoryId = $('#laboratoryId').val();
+
+        $.ajax({
+            url: '/reserve-laboratories',
+            type: 'POST',
+            data: {startDate: startDate, endDate: endDate, userId: userId, laboratoryId: laboratoryId},
+            success: function (result) {
+                alert("Reserva adicionada com sucesso!");
+                window.location = "/reserve-laboratories";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível adicionar a reserva!");
+            }
+        });
+    }
 
     function deleteReserveLaboratory(id) {
         if (confirm("Deseja realmente excluir este registro?")) {
