@@ -1,8 +1,13 @@
 package com.dw2.reserva.service;
 
+import com.dw2.reserva.model.Equipment;
 import com.dw2.reserva.model.ReserveEquipment;
+import com.dw2.reserva.model.ReserveLaboratory;
+import com.dw2.reserva.persistence.repository.EquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveEquipmentRepository;
+import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
 import com.dw2.reserva.service.exception.ObjectNotFoundException;
+import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -15,9 +20,13 @@ public class ReserveEquipmentService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReserveEquipmentService.class);
 
     private final ReserveEquipmentRepository reserveEquipmentRepository;
+    private final ReserveLaboratoryRepository reserveLaboratoryRepository;
+    private final EquipmentRepository equipmentRepository;
 
-    public ReserveEquipmentService(ReserveEquipmentRepository reserveEquipmentRepository) {
+    public ReserveEquipmentService(ReserveEquipmentRepository reserveEquipmentRepository, ReserveLaboratoryRepository reserveLaboratoryRepository, EquipmentRepository equipmentRepository) {
         this.reserveEquipmentRepository = reserveEquipmentRepository;
+        this.reserveLaboratoryRepository = reserveLaboratoryRepository;
+        this.equipmentRepository = equipmentRepository;
     }
 
     public ReserveEquipment getById(Integer id) {
@@ -39,6 +48,33 @@ public class ReserveEquipmentService {
 
     @Transactional
     public ReserveEquipment save(ReserveEquipment reserveEquipment) {
+        final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
+        final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
+        final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
+        boolean isReserved = false;
+
+        for (ReserveLaboratory reserve : reserveLaboratoryList) {
+            if (reserve.getLaboratory().getId().equals(requestedEquipment.getLaboratory().getId())
+                    && (reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate()))) {
+                isReserved = true;
+                break;
+            }
+        }
+
+        for (ReserveEquipment reserve : reserveEquipmentList) {
+            if (reserve.getEquipment().getId().equals(requestedEquipment.getId())
+                    && (reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate()))) {
+                isReserved = true;
+                break;
+            }
+        }
+
+        if (isReserved) {
+            throw new UnableToReserveException("Unable to reserve equipment");
+        }
+
         final int savedId = reserveEquipmentRepository.save(reserveEquipment);
 
         final ReserveEquipment savedReserveEquipment = reserveEquipmentRepository.getById(savedId);
