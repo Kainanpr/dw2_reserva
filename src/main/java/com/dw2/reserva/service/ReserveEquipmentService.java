@@ -48,6 +48,15 @@ public class ReserveEquipmentService {
 
     @Transactional
     public ReserveEquipment save(ReserveEquipment reserveEquipment) {
+        checkForReservation(reserveEquipment);
+        final int savedId = reserveEquipmentRepository.save(reserveEquipment);
+
+        final ReserveEquipment savedReserveEquipment = reserveEquipmentRepository.getById(savedId);
+        LOGGER.info("Saved ReserveEquipment: {}", savedReserveEquipment);
+        return savedReserveEquipment;
+    }
+
+    private void checkForReservation(ReserveEquipment reserveEquipment) {
         final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
         final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
@@ -74,16 +83,11 @@ public class ReserveEquipmentService {
         if (isReserved) {
             throw new UnableToReserveException("Unable to reserve equipment");
         }
-
-        final int savedId = reserveEquipmentRepository.save(reserveEquipment);
-
-        final ReserveEquipment savedReserveEquipment = reserveEquipmentRepository.getById(savedId);
-        LOGGER.info("Saved ReserveEquipment: {}", savedReserveEquipment);
-        return savedReserveEquipment;
     }
 
     @Transactional
     public ReserveEquipment update(ReserveEquipment reserveEquipment) {
+        checkForReservation(reserveEquipment);
         final int reserveEquipmentId = reserveEquipment.getId();
         final int affectedRows = reserveEquipmentRepository.update(reserveEquipment);
 
