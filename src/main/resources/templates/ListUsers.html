@@ -49,24 +49,27 @@
     <h3 class="card-title">Lista de usuários</h3>
   </div>
   <div class="card-body">
-    <form method="POST" th:action="@{/users}" style="margin: 20px 0">
+    <form style="margin: 20px 0">
       <div class="form-row">
         <div class="col form-group">
           <input type="text" class="form-control"
+                 id="name"
                  name="name" placeholder="Nome"/>
         </div>
         <div class="col form-group">
           <input type="text" class="form-control"
+                 id="email"
                  name="email" placeholder="E-mail"/>
         </div>
 
         <div class="col form-group">
           <input type="text" class="form-control"
+                 id="cpf"
                  name="cpf" placeholder="CPF"/>
         </div>
 
         <div class="col-md-1 form-group">
-          <select class="form-control" name="type">
+          <select class="form-control" name="type" id="type">
             <option value="STUDENT">Student</option>
             <option value="TEACHER">Teacher</option>
           </select>
@@ -74,7 +77,8 @@
 
         <div class="col form-group">
           <button type="submit"
-                  class="btn btn-primary">Adicionar
+                  class="btn btn-primary"
+                  onclick="saveUser()">Adicionar
           </button>
         </div>
       </div>
@@ -172,6 +176,26 @@
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
 <script type="text/javascript">
+
+    function saveUser() {
+        var name = $('#name').val();
+        var email = $('#email').val();
+        var cpf = $('#cpf').val();
+        var type = $('#type').val();
+
+        $.ajax({
+            url: '/users',
+            type: 'POST',
+            data: {name: name, email: email, cpf: cpf, type: type},
+            success: function (result) {
+                alert("Usuário adicionado com sucesso!");
+                window.location = "/users";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível adicionar o usuário!");
+            }
+        });
+    }
 
     function deleteUser(id) {
         if (confirm("Deseja realmente excluir este registro?")) {

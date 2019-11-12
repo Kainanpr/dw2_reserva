@@ -31,7 +31,7 @@ public class UserController {
     }
 
     @PostMapping
-    public String save(String name, String email, String cpf, TypeEnum type) {
+    public ResponseEntity<String> save(String name, String email, String cpf, TypeEnum type) {
         final User user = new User.Builder()
                 .setName(name)
                 .setEmail(email)
@@ -40,7 +40,9 @@ public class UserController {
                 .build();
         LOGGER.info("User received to save: {}", user);
         userService.save(user);
-        return "redirect:/users";
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 
     @GetMapping(value = "/delete/{id}")
