@@ -1,7 +1,6 @@
 package com.dw2.reserva.controller;
 
 import com.dw2.reserva.model.Laboratory;
-import com.dw2.reserva.model.TypeEnum;
 import com.dw2.reserva.service.LaboratoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +30,15 @@ public class LaboratoryController {
     }
 
     @PostMapping
-    public String save(String name) {
+    public ResponseEntity<String> save(String name) {
         final Laboratory laboratory = new Laboratory.Builder()
                 .setName(name)
                 .build();
         LOGGER.info("Laboratory received to save: {}", laboratory);
         laboratoryService.save(laboratory);
-        return "redirect:/laboratories";
+        return ResponseEntity
+                .status(HttpStatus.CREATED)
+                .build();
     }
 
     @GetMapping(value = "/delete/{id}")

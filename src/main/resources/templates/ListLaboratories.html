@@ -49,16 +49,18 @@
     <h3 class="card-title">Lista de laboratórios</h3>
   </div>
   <div class="card-body">
-    <form method="POST" th:action="@{/laboratories}" style="margin: 20px 0">
+    <form style="margin: 20px 0">
       <div class="form-row">
         <div class="col form-group">
           <input type="text" class="form-control"
+                 id="name"
                  name="name" placeholder="Nome"/>
         </div>
 
         <div class="col form-group">
           <button type="submit"
-                  class="btn btn-primary">Adicionar
+                  class="btn btn-primary"
+                  onclick="saveLaboratory()">Adicionar
           </button>
         </div>
       </div>
@@ -129,6 +131,23 @@
 <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
 
 <script type="text/javascript">
+
+    function saveLaboratory() {
+        var name = $('#name').val();
+
+        $.ajax({
+            url: '/laboratories',
+            type: 'POST',
+            data: {name: name},
+            success: function (result) {
+                alert("Laboratório adicionado com sucesso!");
+                window.location = "/laboratories";
+            },
+            error: function (xhr, ajaxOptions, thrownError) {
+                alert("Erro: Não foi possível adicionar o laboratório!");
+            }
+        });
+    }
 
     function deleteLaboratory(id) {
         if (confirm("Deseja realmente excluir este registro?")) {
