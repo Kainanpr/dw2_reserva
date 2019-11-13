@@ -6,6 +6,7 @@ import com.dw2.reserva.model.User;
 import com.dw2.reserva.service.EquipmentService;
 import com.dw2.reserva.service.ReserveEquipmentService;
 import com.dw2.reserva.service.UserService;
+import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -59,10 +60,16 @@ public class ReserveEquipmentController {
                 .setEquipment(equipment)
                 .build();
         LOGGER.info("ReserveEquipment received to save: {}", reserveEquipment);
-        reserveEquipmentService.save(reserveEquipment);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build();
+
+        try {
+            reserveEquipmentService.save(reserveEquipment);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .build();
+        } catch (UnableToReserveException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping(value = "/delete/{id}")
@@ -94,9 +101,16 @@ public class ReserveEquipmentController {
                 .build();
         LOGGER.info("ID received to update: {}", id);
         LOGGER.info("ReserveEquipment received to update: {}", reserveEquipment);
-        reserveEquipmentService.update(reserveEquipment);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+
+        try {
+            reserveEquipmentService.update(reserveEquipment);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .build();
+        } catch (UnableToReserveException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
+
     }
 }
