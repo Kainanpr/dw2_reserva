@@ -64,6 +64,7 @@ public class ReserveEquipmentService {
     private void checkForReservation(ReserveEquipment reserveEquipment) {
         final LocalDateTime now = LocalDateTime.now(clock);
 
+        // Correcting daylight(DST) saving time in 2019
         if (reserveEquipment.getStartDate().minusHours(23).isBefore(now)) {
             throw new UnableToReserveException("Reservation allowed only 24 hours in advance");
         }
