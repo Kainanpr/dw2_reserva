@@ -63,18 +63,22 @@ public class ReserveEquipmentService {
         boolean isReserved = false;
 
         for (ReserveLaboratory reserve : reserveLaboratoryList) {
-            if (reserve.getLaboratory().getId().equals(requestedEquipment.getLaboratory().getId())
-                    && (reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
-                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate()))) {
+            if ((reserve.getLaboratory().getId().equals(requestedEquipment.getLaboratory().getId()))
+                    && ((reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate())))
+                    || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
+                    && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate())))) {
                 isReserved = true;
                 break;
             }
         }
 
         for (ReserveEquipment reserve : reserveEquipmentList) {
-            if (reserve.getEquipment().getId().equals(requestedEquipment.getId())
-                    && (reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
-                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate()))) {
+            if ((reserve.getEquipment().getId().equals(requestedEquipment.getId()))
+                    && ((reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate())))
+                    || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
+                    && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate())))) {
                 isReserved = true;
                 break;
             }
