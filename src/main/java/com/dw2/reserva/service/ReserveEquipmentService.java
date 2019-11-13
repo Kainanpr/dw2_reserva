@@ -13,20 +13,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ReserveEquipmentService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReserveEquipmentService.class);
+    private final Clock clock;
 
     private final ReserveEquipmentRepository reserveEquipmentRepository;
     private final ReserveLaboratoryRepository reserveLaboratoryRepository;
     private final EquipmentRepository equipmentRepository;
 
-    public ReserveEquipmentService(ReserveEquipmentRepository reserveEquipmentRepository, ReserveLaboratoryRepository reserveLaboratoryRepository, EquipmentRepository equipmentRepository) {
+    public ReserveEquipmentService(ReserveEquipmentRepository reserveEquipmentRepository, ReserveLaboratoryRepository reserveLaboratoryRepository, EquipmentRepository equipmentRepository, Clock clock) {
         this.reserveEquipmentRepository = reserveEquipmentRepository;
         this.reserveLaboratoryRepository = reserveLaboratoryRepository;
         this.equipmentRepository = equipmentRepository;
+        this.clock = clock;
     }
 
     public ReserveEquipment getById(Integer id) {
@@ -57,6 +61,7 @@ public class ReserveEquipmentService {
     }
 
     private void checkForReservation(ReserveEquipment reserveEquipment) {
+        final LocalDateTime now = LocalDateTime.now(clock);
         final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
         final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
