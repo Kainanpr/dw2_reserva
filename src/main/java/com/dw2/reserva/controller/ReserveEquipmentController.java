@@ -6,6 +6,7 @@ import com.dw2.reserva.model.User;
 import com.dw2.reserva.service.EquipmentService;
 import com.dw2.reserva.service.ReserveEquipmentService;
 import com.dw2.reserva.service.UserService;
+import com.dw2.reserva.service.exception.ExistingReservationException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,10 +67,14 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .build();
+        } catch (ExistingReservationException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva nesse horário!");
+                    .body("Reserva permitida com apenas 24 horas de antecedência!");
         }
     }
 
@@ -108,10 +113,14 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .build();
+        } catch (ExistingReservationException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva nesse horário!");
+                    .body("Reserva permitida com apenas 24 horas de antecedência!");
         }
 
     }

@@ -6,6 +6,7 @@ import com.dw2.reserva.model.ReserveLaboratory;
 import com.dw2.reserva.persistence.repository.EquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveEquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
+import com.dw2.reserva.service.exception.ExistingReservationException;
 import com.dw2.reserva.service.exception.ObjectNotFoundException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
@@ -62,6 +63,11 @@ public class ReserveEquipmentService {
 
     private void checkForReservation(ReserveEquipment reserveEquipment) {
         final LocalDateTime now = LocalDateTime.now(clock);
+
+        if (reserveEquipment.getStartDate().minusDays(1).isBefore(now)) {
+            throw new UnableToReserveException("Reservation allowed only 24 hours in advance");
+        }
+
         final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
         final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
@@ -90,7 +96,7 @@ public class ReserveEquipmentService {
         }
 
         if (isReserved) {
-            throw new UnableToReserveException("Unable to reserve equipment");
+            throw new ExistingReservationException("There is already a reservation");
         }
     }
 
