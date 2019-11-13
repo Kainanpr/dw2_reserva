@@ -64,7 +64,7 @@ public class ReserveEquipmentService {
     private void checkForReservation(ReserveEquipment reserveEquipment) {
         final LocalDateTime now = LocalDateTime.now(clock);
 
-        if (reserveEquipment.getStartDate().minusDays(1).isBefore(now)) {
+        if (reserveEquipment.getStartDate().minusHours(23).isBefore(now)) {
             throw new UnableToReserveException("Reservation allowed only 24 hours in advance");
         }
 
