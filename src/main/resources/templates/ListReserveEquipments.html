@@ -209,7 +209,11 @@
                 window.location = "/reserve-equipments";
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: Não foi possível adicionar a reserva!");
+                if (xhr.status === 400 ) {
+                    alert("Erro: " + xhr.responseText);
+                } else {
+                    alert("Erro: Não foi possível adicionar a reserva!");
+                }
             }
         });
     }
@@ -257,7 +261,11 @@
                 window.location = "/reserve-equipments";
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: Não foi possível editar a reserva!");
+                if (xhr.status === 400 ) {
+                    alert("Erro: " + xhr.responseText);
+                } else {
+                    alert("Erro: Não foi possível editar a reserva!");
+                }
             }
         });
     }

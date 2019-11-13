@@ -68,7 +68,8 @@ public class ReserveEquipmentController {
                     .build();
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva nesse horário!");
         }
     }
 
@@ -109,7 +110,8 @@ public class ReserveEquipmentController {
                     .build();
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva nesse horário!");
         }
 
     }
