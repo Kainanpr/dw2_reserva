@@ -68,14 +68,14 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .build();
-        } catch (ThereIsReserveLaboratoryException ex) {
-            LOGGER.error("{}", ex.getMessage());
-            return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
         } catch (ThereIsReserveForEquipmentException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Já existe uma reserva neste horário para o equipamento!");
+        } catch (ThereIsReserveLaboratoryException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
@@ -118,19 +118,18 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .build();
-        } catch (ThereIsReserveLaboratoryException ex) {
-            LOGGER.error("{}", ex.getMessage());
-            return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
         } catch (ThereIsReserveForEquipmentException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Já existe uma reserva neste horário para o equipamento!");
+        } catch (ThereIsReserveLaboratoryException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Reserva permitida com apenas 24 horas de antecedência!");
         }
-
     }
 }

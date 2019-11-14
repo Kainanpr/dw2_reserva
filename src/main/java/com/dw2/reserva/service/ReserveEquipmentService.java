@@ -71,18 +71,8 @@ public class ReserveEquipmentService {
         }
 
         final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
-        final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
-
-        for (ReserveLaboratory reserve : reserveLaboratoryList) {
-            if ((reserve.getLaboratory().getId().equals(requestedEquipment.getLaboratory().getId()))
-                    && (((reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
-                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate())))
-                    || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
-                    && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate()))))) {
-                throw new ThereIsReserveLaboratoryException("There is already a reservation for the laboratory");
-            }
-        }
+        final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
 
         for (ReserveEquipment reserve : reserveEquipmentList) {
             if ((reserve.getEquipment().getId().equals(requestedEquipment.getId()))
@@ -91,6 +81,16 @@ public class ReserveEquipmentService {
                     || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
                     && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate()))))) {
                 throw new ThereIsReserveForEquipmentException("There is already a reservation for the equipment");
+            }
+        }
+
+        for (ReserveLaboratory reserve : reserveLaboratoryList) {
+            if ((reserve.getLaboratory().getId().equals(requestedEquipment.getLaboratory().getId()))
+                    && (((reserveEquipment.getStartDate().isAfter(reserve.getStartDate()) || reserveEquipment.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate())))
+                    || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
+                    && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate()))))) {
+                throw new ThereIsReserveLaboratoryException("There is already a reservation for the laboratory");
             }
         }
     }
