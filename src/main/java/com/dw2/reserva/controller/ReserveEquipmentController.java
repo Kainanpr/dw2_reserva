@@ -118,10 +118,14 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .build();
+        } catch (ThereIsReserveLaboratoryException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
         } catch (ThereIsReserveForEquipmentException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário!");
+                    .body("Já existe uma reserva neste horário para o equipamento!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
