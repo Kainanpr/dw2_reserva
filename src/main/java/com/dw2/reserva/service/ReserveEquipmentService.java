@@ -6,8 +6,9 @@ import com.dw2.reserva.model.ReserveLaboratory;
 import com.dw2.reserva.persistence.repository.EquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveEquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
-import com.dw2.reserva.service.exception.ExistingReservationException;
 import com.dw2.reserva.service.exception.ObjectNotFoundException;
+import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
+import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -72,7 +73,6 @@ public class ReserveEquipmentService {
         final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
         final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
-        boolean isReserved = false;
 
         for (ReserveLaboratory reserve : reserveLaboratoryList) {
             if ((reserve.getLaboratory().getId().equals(requestedEquipment.getLaboratory().getId()))
@@ -80,8 +80,7 @@ public class ReserveEquipmentService {
                     && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate())))
                     || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
                     && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate()))))) {
-                isReserved = true;
-                break;
+                throw new ThereIsReserveLaboratoryException("There is already a reservation for the laboratory");
             }
         }
 
@@ -91,13 +90,8 @@ public class ReserveEquipmentService {
                     && (reserveEquipment.getStartDate().isBefore(reserve.getEndDate()) || reserveEquipment.getStartDate().isEqual(reserve.getEndDate())))
                     || ((reserveEquipment.getEndDate().isBefore(reserve.getEndDate()) || reserveEquipment.getEndDate().isEqual(reserve.getEndDate()))
                     && (reserveEquipment.getEndDate().isAfter(reserve.getStartDate()) || reserveEquipment.getEndDate().isEqual(reserve.getStartDate()))))) {
-                isReserved = true;
-                break;
+                throw new ThereIsReserveForEquipmentException("There is already a reservation for the equipment");
             }
-        }
-
-        if (isReserved) {
-            throw new ExistingReservationException("There is already a reservation");
         }
     }
 

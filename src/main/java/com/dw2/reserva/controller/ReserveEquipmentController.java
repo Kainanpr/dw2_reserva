@@ -6,7 +6,8 @@ import com.dw2.reserva.model.User;
 import com.dw2.reserva.service.EquipmentService;
 import com.dw2.reserva.service.ReserveEquipmentService;
 import com.dw2.reserva.service.UserService;
-import com.dw2.reserva.service.exception.ExistingReservationException;
+import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
+import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,10 +68,14 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .build();
-        } catch (ExistingReservationException ex) {
+        } catch (ThereIsReserveLaboratoryException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário!");
+                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
+        } catch (ThereIsReserveForEquipmentException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o equipamento!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
@@ -113,7 +118,7 @@ public class ReserveEquipmentController {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .build();
-        } catch (ExistingReservationException ex) {
+        } catch (ThereIsReserveForEquipmentException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Já existe uma reserva neste horário!");
