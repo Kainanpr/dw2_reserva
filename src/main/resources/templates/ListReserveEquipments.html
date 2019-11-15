@@ -66,12 +66,14 @@
 
                 <div class="col-md-3 form-group">
                     <select class="form-control" name="userId" id="userId">
+                        <option value="" selected="selected">Selecione um usuário</option>
                         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-3 form-group">
                     <select class="form-control" name="equipmentId" id="equipmentId">
+                        <option value="" selected="selected">Selecione um equipamento</option>
                         <option th:each="equipment : ${equipments}" th:value="${equipment.id}"
                                 th:text="${equipment.name}"></option>
                     </select>
@@ -153,14 +155,14 @@
 
                     <div class="form-row">
                         <div class="col form-group">
-                            <select class="form-control" name="equipmentId" id="equipmentIdUpdate"/>>
+                            <select class="form-control" name="equipmentId" id="equipmentIdUpdate"/>
                             <option th:each="equipment : ${equipments}" th:value="${equipment.id}"
                                     th:text="${equipment.name}"></option>
                             </select>
                         </div>
 
                         <div class="col form-group">
-                            <select class="form-control" name="laboratoryId" id="userIdUpdate"/>>
+                            <select class="form-control" name="laboratoryId" id="userIdUpdate"/>
                             <option th:each="user : ${users}" th:value="${user.id}"
                                     th:text="${user.name}"></option>
                             </select>
@@ -199,6 +201,11 @@
         var endDate = $('#endDate').val();
         var userId = $('#userId').val();
         var equipmentId = $('#equipmentId').val();
+
+        if (!userId || !equipmentId) {
+            alert("Erro: Informações faltando!");
+            return;
+        }
 
         $.ajax({
             url: '/reserve-equipments',

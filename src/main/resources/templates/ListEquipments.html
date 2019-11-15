@@ -59,6 +59,7 @@
 
         <div class="col-md-3 form-group">
           <select class="form-control" name="laboratoryId" id="laboratoryId">
+            <option value="" selected="selected">Selecione um laboratório</option>
             <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}" th:text="${laboratory.name}"></option>
           </select>
         </div>
@@ -148,6 +149,11 @@
     function saveEquipment() {
         var name = $('#name').val();
         var laboratoryId = $('#laboratoryId').val();
+
+        if (!laboratoryId) {
+            alert("Erro: Informações faltando!");
+            return;
+        }
 
         $.ajax({
             url: '/equipments',
