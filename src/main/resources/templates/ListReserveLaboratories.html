@@ -193,6 +193,11 @@
             return;
         }
 
+        if (moment(endDate).isSameOrBefore(startDate)) {
+            alert("Erro: Preencha a saída com uma data no futuro!");
+            return;
+        }
+
         $.ajax({
             url: '/reserve-laboratories',
             type: 'POST',
