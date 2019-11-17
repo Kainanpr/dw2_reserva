@@ -37,6 +37,13 @@ public class UserService {
         return userList;
     }
 
+
+    public List<User> getAllTeachers() {
+        final List<User> userList = userRepository.getAllTeachers();
+        LOGGER.info("Retrieved all teachers: {}", userList);
+        return userList;
+    }
+
     @Transactional
     public User save(User user) {
         final int savedId = userRepository.save(user);

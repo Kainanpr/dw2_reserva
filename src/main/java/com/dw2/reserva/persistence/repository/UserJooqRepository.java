@@ -54,6 +54,16 @@ public class UserJooqRepository implements UserRepository {
     }
 
     @Override
+    public List<User> getAllTeachers() {
+        final Result<Record> records = dslContext.select()
+                .from(USER)
+                .where(USER.TYPE.eq(TypeEnum.TEACHER.name()))
+                .fetch();
+
+        return records.map(record -> toUser(record));
+    }
+
+    @Override
     public int save(User user) {
         return dslContext.insertInto(USER)
                 .columns(USER.ID,

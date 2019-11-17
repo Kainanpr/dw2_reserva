@@ -6,6 +6,7 @@ import com.dw2.reserva.model.User;
 import com.dw2.reserva.service.LaboratoryService;
 import com.dw2.reserva.service.ReserveLaboratoryService;
 import com.dw2.reserva.service.UserService;
+import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -37,7 +38,7 @@ public class ReserveLaboratoryController {
     public ModelAndView list() {
         final ModelAndView modelAndView = new ModelAndView("ListReserveLaboratories");
         modelAndView.addObject("reserveLaboratories", reserveLaboratoryService.getAll());
-        modelAndView.addObject("users", userService.getAll());
+        modelAndView.addObject("users", userService.getAllTeachers());
         modelAndView.addObject("laboratories", laboratoryService.getAll());
         return modelAndView;
     }
@@ -59,10 +60,18 @@ public class ReserveLaboratoryController {
                 .setLaboratory(laboratory)
                 .build();
         LOGGER.info("ReserveLaboratory received to save: {}", reserveLaboratory);
-        reserveLaboratoryService.save(reserveLaboratory);
-        return ResponseEntity
-                .status(HttpStatus.CREATED)
-                .build();
+
+        try {
+            reserveLaboratoryService.save(reserveLaboratory);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .build();
+        } catch (UnableToReserveException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Reserva permitida com apenas 48 horas de antecedência!");
+        }
+
     }
 
     @GetMapping(value = "/delete/{id}")

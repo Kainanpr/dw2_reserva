@@ -65,12 +65,14 @@
 
                 <div class="col-md-3 form-group">
                     <select class="form-control" name="userId" id="userId">
+                        <option value="" selected="selected">Selecione um professor</option>
                         <option th:each="user : ${users}" th:value="${user.id}" th:text="${user.name}"></option>
                     </select>
                 </div>
 
                 <div class="col-md-3 form-group">
                     <select class="form-control" name="laboratoryId" id="laboratoryId">
+                        <option value="" selected="selected">Selecione um laboratório</option>
                         <option th:each="laboratory : ${laboratories}" th:value="${laboratory.id}"
                                 th:text="${laboratory.name}"></option>
                     </select>
@@ -186,6 +188,11 @@
         var userId = $('#userId').val();
         var laboratoryId = $('#laboratoryId').val();
 
+        if (!userId || !laboratoryId) {
+            alert("Erro: Informações faltando!");
+            return;
+        }
+
         $.ajax({
             url: '/reserve-laboratories',
             type: 'POST',
@@ -195,7 +202,11 @@
                 window.location = "/reserve-laboratories";
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: Não foi possível adicionar a reserva!");
+                if (xhr.status === 400 ) {
+                    alert("Erro: " + xhr.responseText);
+                } else {
+                    alert("Erro: Não foi possível adicionar a reserva!");
+                }
             }
         });
     }
@@ -243,7 +254,11 @@
                 window.location = "/reserve-laboratories";
             },
             error: function (xhr, ajaxOptions, thrownError) {
-                alert("Erro: Não foi possível editar a reserva!");
+                if (xhr.status === 400 ) {
+                    alert("Erro: " + xhr.responseText);
+                } else {
+                    alert("Erro: Não foi possível editar a reserva!");
+                }
             }
         });
     }

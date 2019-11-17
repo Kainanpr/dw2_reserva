@@ -3,21 +3,26 @@ package com.dw2.reserva.service;
 import com.dw2.reserva.model.ReserveLaboratory;
 import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
 import com.dw2.reserva.service.exception.ObjectNotFoundException;
+import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
 public class ReserveLaboratoryService {
     private static final Logger LOGGER = LoggerFactory.getLogger(ReserveLaboratoryService.class);
+    private final Clock clock;
 
     private final ReserveLaboratoryRepository reserveLaboratoryRepository;
 
-    public ReserveLaboratoryService(ReserveLaboratoryRepository reserveLaboratoryRepository) {
+    public ReserveLaboratoryService(ReserveLaboratoryRepository reserveLaboratoryRepository, Clock clock) {
         this.reserveLaboratoryRepository = reserveLaboratoryRepository;
+        this.clock = clock;
     }
 
     public ReserveLaboratory getById(Integer id) {
@@ -39,6 +44,7 @@ public class ReserveLaboratoryService {
 
     @Transactional
     public ReserveLaboratory save(ReserveLaboratory reserveLaboratory) {
+        checkForReservation(reserveLaboratory);
         final int savedId = reserveLaboratoryRepository.save(reserveLaboratory);
 
         final ReserveLaboratory savedReserveLaboratory = reserveLaboratoryRepository.getById(savedId);
@@ -46,8 +52,18 @@ public class ReserveLaboratoryService {
         return savedReserveLaboratory;
     }
 
+    private void checkForReservation(ReserveLaboratory reserveLaboratory) {
+        final LocalDateTime now = LocalDateTime.now(clock);
+
+        // Correcting daylight(DST) saving time in 2019
+        if (reserveLaboratory.getStartDate().minusHours(47).isBefore(now)) {
+            throw new UnableToReserveException("Reservation allowed only 48 hours in advance");
+        }
+    }
+
     @Transactional
     public ReserveLaboratory update(ReserveLaboratory reserveLaboratory) {
+        checkForReservation(reserveLaboratory);
         final int reserveLaboratoryId = reserveLaboratory.getId();
         final int affectedRows = reserveLaboratoryRepository.update(reserveLaboratory);
 

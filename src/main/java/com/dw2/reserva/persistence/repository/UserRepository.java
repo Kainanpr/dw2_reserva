@@ -9,6 +9,8 @@ public interface UserRepository {
 
     List<User> getAll();
 
+    List<User> getAllTeachers();
+
     int save(User user);
 
     int update(User user);
