@@ -251,8 +251,6 @@
     }
 
     function saveUpdatesToReserveEquipment() {
-        $('#modalUpdate').modal('hide');
-
         var id = $('#idUpdate').val();
         var startDate = $('#startDateUpdate').val();
         var endDate = $('#endDateUpdate').val();
@@ -265,6 +263,7 @@
             data: {startDate: startDate, endDate: endDate, userId: userId, equipmentId: equipmentId},
             success: function (result) {
                 alert("Reserva editada com sucesso!");
+                $('#modalUpdate').modal('hide');
                 window.location = "/reserve-equipments";
             },
             error: function (xhr, ajaxOptions, thrownError) {
