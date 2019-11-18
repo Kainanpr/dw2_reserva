@@ -64,7 +64,7 @@ public class ReserveEquipmentService {
         final LocalDateTime now = LocalDateTime.now(clock);
 
         // Correcting daylight(DST) saving time in 2019
-        // Important: When the java API will be fixed, this line must be fixed.
+        // Important: When the java API is fixed, this line should be fixed.
         if (reserveEquipment.getStartDate().minusHours(23).isBefore(now)) {
             throw new UnableToReserveException("Reservation allowed only 24 hours in advance");
         }
@@ -114,7 +114,7 @@ public class ReserveEquipmentService {
 
     private void checkRenovation(ReserveEquipment reserveEquipment) {
         // Correcting daylight(DST) saving time in 2019
-        // Important: When the java API will be fixed, this line must be fixed.
+        // Important: When the java API is fixed, this line should be fixed.
         final LocalDateTime now = LocalDateTime.now(clock).minusHours(1);
 
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
