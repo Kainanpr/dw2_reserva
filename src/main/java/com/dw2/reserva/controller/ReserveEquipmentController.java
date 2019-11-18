@@ -8,6 +8,7 @@ import com.dw2.reserva.service.ReserveEquipmentService;
 import com.dw2.reserva.service.UserService;
 import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
 import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
+import com.dw2.reserva.service.exception.UnableToRenewException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -126,6 +127,10 @@ public class ReserveEquipmentController {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
+        } catch (UnableToRenewException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Só pode ser renovado faltando 10 minutos para o termino da reserva!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()

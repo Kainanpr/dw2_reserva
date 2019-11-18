@@ -6,10 +6,7 @@ import com.dw2.reserva.model.ReserveLaboratory;
 import com.dw2.reserva.persistence.repository.EquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveEquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
-import com.dw2.reserva.service.exception.ObjectNotFoundException;
-import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
-import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
-import com.dw2.reserva.service.exception.UnableToReserveException;
+import com.dw2.reserva.service.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -54,6 +51,7 @@ public class ReserveEquipmentService {
 
     @Transactional
     public ReserveEquipment save(ReserveEquipment reserveEquipment) {
+        checkForReservationByNow(reserveEquipment);
         checkForReservation(reserveEquipment);
         final int savedId = reserveEquipmentRepository.save(reserveEquipment);
 
@@ -62,14 +60,17 @@ public class ReserveEquipmentService {
         return savedReserveEquipment;
     }
 
-    private void checkForReservation(ReserveEquipment reserveEquipment) {
+    private void checkForReservationByNow(ReserveEquipment reserveEquipment) {
         final LocalDateTime now = LocalDateTime.now(clock);
 
         // Correcting daylight(DST) saving time in 2019
+        // Important: When the java API will be fixed, this line must be fixed.
         if (reserveEquipment.getStartDate().minusHours(23).isBefore(now)) {
             throw new UnableToReserveException("Reservation allowed only 24 hours in advance");
         }
+    }
 
+    private void checkForReservation(ReserveEquipment reserveEquipment) {
         final Equipment requestedEquipment = equipmentRepository.getById(reserveEquipment.getEquipment().getId());
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
         final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
@@ -98,6 +99,7 @@ public class ReserveEquipmentService {
     @Transactional
     public ReserveEquipment update(ReserveEquipment reserveEquipment) {
         checkForReservation(reserveEquipment);
+        checkRenovation(reserveEquipment);
         final int reserveEquipmentId = reserveEquipment.getId();
         final int affectedRows = reserveEquipmentRepository.update(reserveEquipment);
 
@@ -108,6 +110,21 @@ public class ReserveEquipmentService {
         final ReserveEquipment updatedReserveEquipment = reserveEquipmentRepository.getById(reserveEquipmentId);
         LOGGER.info("Updated ReserveEquipment: {}", updatedReserveEquipment);
         return updatedReserveEquipment;
+    }
+
+    private void checkRenovation(ReserveEquipment reserveEquipment) {
+        // Correcting daylight(DST) saving time in 2019
+        // Important: When the java API will be fixed, this line must be fixed.
+        final LocalDateTime now = LocalDateTime.now(clock).minusHours(1);
+
+        final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
+
+        for (ReserveEquipment reserve : reserveEquipmentList) {
+            if ((reserve.getId().equals(reserveEquipment.getId()))
+                    && !(now.minusMinutes(1).isBefore(reserve.getEndDate()) && now.plusMinutes(10).isAfter(reserve.getEndDate()))) {
+                throw new UnableToRenewException("It can only be renewed 10 minutes before the end of the reservation!");
+            }
+        }
     }
 
     @Transactional
