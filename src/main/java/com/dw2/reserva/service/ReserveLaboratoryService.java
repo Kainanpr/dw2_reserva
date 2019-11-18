@@ -1,8 +1,14 @@
 package com.dw2.reserva.service;
 
+import com.dw2.reserva.model.Laboratory;
+import com.dw2.reserva.model.ReserveEquipment;
 import com.dw2.reserva.model.ReserveLaboratory;
+import com.dw2.reserva.persistence.repository.LaboratoryRepository;
+import com.dw2.reserva.persistence.repository.ReserveEquipmentRepository;
 import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
 import com.dw2.reserva.service.exception.ObjectNotFoundException;
+import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
+import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +25,13 @@ public class ReserveLaboratoryService {
     private final Clock clock;
 
     private final ReserveLaboratoryRepository reserveLaboratoryRepository;
+    private final ReserveEquipmentRepository reserveEquipmentRepository;
+    private final LaboratoryRepository laboratoryRepository;
 
-    public ReserveLaboratoryService(ReserveLaboratoryRepository reserveLaboratoryRepository, Clock clock) {
+    public ReserveLaboratoryService(ReserveLaboratoryRepository reserveLaboratoryRepository, ReserveEquipmentRepository reserveEquipmentRepository, LaboratoryRepository laboratoryRepository, Clock clock) {
         this.reserveLaboratoryRepository = reserveLaboratoryRepository;
+        this.reserveEquipmentRepository = reserveEquipmentRepository;
+        this.laboratoryRepository = laboratoryRepository;
         this.clock = clock;
     }
 
@@ -58,6 +68,30 @@ public class ReserveLaboratoryService {
         // Correcting daylight(DST) saving time in 2019
         if (reserveLaboratory.getStartDate().minusHours(47).isBefore(now)) {
             throw new UnableToReserveException("Reservation allowed only 48 hours in advance");
+        }
+
+        final Laboratory requestedLaboratory = laboratoryRepository.getById(reserveLaboratory.getLaboratory().getId());
+        final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
+        final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
+
+        for (ReserveLaboratory reserve : reserveLaboratoryList) {
+            if ((reserve.getLaboratory().getId().equals(requestedLaboratory.getId()))
+                    && (((reserveLaboratory.getStartDate().isAfter(reserve.getStartDate()) || reserveLaboratory.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveLaboratory.getStartDate().isBefore(reserve.getEndDate()) || reserveLaboratory.getStartDate().isEqual(reserve.getEndDate())))
+                    || ((reserveLaboratory.getEndDate().isBefore(reserve.getEndDate()) || reserveLaboratory.getEndDate().isEqual(reserve.getEndDate()))
+                    && (reserveLaboratory.getEndDate().isAfter(reserve.getStartDate()) || reserveLaboratory.getEndDate().isEqual(reserve.getStartDate()))))) {
+                throw new ThereIsReserveLaboratoryException("There is already a reservation for the laboratory");
+            }
+        }
+
+        for (ReserveEquipment reserve : reserveEquipmentList) {
+            if ((reserve.getEquipment().getLaboratory().getId().equals(requestedLaboratory.getId()))
+                    && (((reserveLaboratory.getStartDate().isAfter(reserve.getStartDate()) || reserveLaboratory.getStartDate().isEqual(reserve.getStartDate()))
+                    && (reserveLaboratory.getStartDate().isBefore(reserve.getEndDate()) || reserveLaboratory.getStartDate().isEqual(reserve.getEndDate())))
+                    || ((reserveLaboratory.getEndDate().isBefore(reserve.getEndDate()) || reserveLaboratory.getEndDate().isEqual(reserve.getEndDate()))
+                    && (reserveLaboratory.getEndDate().isAfter(reserve.getStartDate()) || reserveLaboratory.getEndDate().isEqual(reserve.getStartDate()))))) {
+                throw new ThereIsReserveForEquipmentException("There is already a reservation for the equipment");
+            }
         }
     }
 

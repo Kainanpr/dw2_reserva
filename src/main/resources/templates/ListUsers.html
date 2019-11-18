@@ -223,8 +223,6 @@
     }
 
     function SaveUpdatesToUser() {
-        $('#modalUpdate').modal('hide');
-
         var id = $('#idUpdate').val();
         var name = $('#nameUpdate').val();
         var email = $('#emailUpdate').val();
@@ -237,6 +235,7 @@
             data: {name: name, email: email, cpf: cpf, type: type},
             success: function (result) {
                 alert("Usuário editado com sucesso!");
+                $('#modalUpdate').modal('hide');
                 window.location = "/users";
             },
             error: function (xhr, ajaxOptions, thrownError) {

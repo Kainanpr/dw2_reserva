@@ -6,6 +6,8 @@ import com.dw2.reserva.model.User;
 import com.dw2.reserva.service.LaboratoryService;
 import com.dw2.reserva.service.ReserveLaboratoryService;
 import com.dw2.reserva.service.UserService;
+import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
+import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
 import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,12 +68,19 @@ public class ReserveLaboratoryController {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .build();
+        } catch (ThereIsReserveForEquipmentException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o equipamento!");
+        } catch (ThereIsReserveLaboratoryException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Reserva permitida com apenas 48 horas de antecedência!");
         }
-
     }
 
     @GetMapping(value = "/delete/{id}")
@@ -103,9 +112,24 @@ public class ReserveLaboratoryController {
                 .build();
         LOGGER.info("ID received to update: {}", id);
         LOGGER.info("ReserveLaboratory received to update: {}", reserveLaboratory);
-        reserveLaboratoryService.update(reserveLaboratory);
-        return ResponseEntity
-                .status(HttpStatus.OK)
-                .build();
+
+        try {
+            reserveLaboratoryService.update(reserveLaboratory);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .build();
+        } catch (ThereIsReserveForEquipmentException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o equipamento!");
+        } catch (ThereIsReserveLaboratoryException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
+        } catch (UnableToReserveException ex) {
+            LOGGER.error("{}", ex.getMessage());
+            return ResponseEntity.badRequest()
+                    .body("Reserva permitida com apenas 48 horas de antecedência!");
+        }
     }
 }
