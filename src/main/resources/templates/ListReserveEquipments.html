@@ -109,6 +109,9 @@
                 <td th:text="${reserveEquipment.equipment.name}"></td>
                 <td>
                     <div class="float-right">
+                        <a class="btn btn-secondary text-white"
+                           th:data-reserveEquipment="${reserveEquipment}"
+                           th:onclick="javascript:renewReservation(this.getAttribute('data-reserveEquipment'))">Renovar por mais 1 hora</a>
                         <a class="btn btn-primary text-white"
                            th:data-reserveEquipment="${reserveEquipment}"
                            th:onclick="javascript:showModalUpdateReserveEquipment(this.getAttribute('data-reserveEquipment'))">Editar</a>
@@ -194,6 +197,37 @@
     function handleUpdateStartDateChange() {
         var startDateUpdate = $('#startDateUpdate').val();
         $('#endDateUpdate').val(moment(startDateUpdate).add(1, 'hours').format('YYYY-MM-DDTHH:mm'));
+    }
+
+    function renewReservation(reserveEquipmentJson) {
+        if (confirm("Deseja realmente renovar este registro?")) {
+            var reserveEquipment = JSON.parse(reserveEquipmentJson);
+
+            var endDate = moment(reserveEquipment.startDate).add(1, 'hours').format('YYYY-MM-DDTHH:mm');
+
+            $.ajax({
+                url: '/reserve-equipments/update/' + reserveEquipment.id,
+                type: 'POST',
+                data: {
+                    startDate: reserveEquipment.startDate,
+                    endDate: endDate,
+                    userId: reserveEquipment.user.id,
+                    equipmentId: reserveEquipment.equipment.id
+                },
+                success: function (result) {
+                    alert("Reserva editada com sucesso!");
+                    $('#modalUpdate').modal('hide');
+                    window.location = "/reserve-equipments";
+                },
+                error: function (xhr, ajaxOptions, thrownError) {
+                    if (xhr.status === 400) {
+                        alert("Erro: " + xhr.responseText);
+                    } else {
+                        alert("Erro: Não foi possível editar a reserva!");
+                    }
+                }
+            });
+        }
     }
 
     function saveReserveEquipment() {
