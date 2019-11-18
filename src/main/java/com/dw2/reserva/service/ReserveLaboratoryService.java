@@ -75,7 +75,7 @@ public class ReserveLaboratoryService {
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();
 
         for (ReserveLaboratory reserve : reserveLaboratoryList) {
-            if ((reserve.getLaboratory().getId().equals(requestedLaboratory.getId()))
+            if ((reserve.getLaboratory().getId().equals(requestedLaboratory.getId()) && !reserve.getId().equals(reserveLaboratory.getId()))
                     && (((reserveLaboratory.getStartDate().isAfter(reserve.getStartDate()) || reserveLaboratory.getStartDate().isEqual(reserve.getStartDate()))
                     && (reserveLaboratory.getStartDate().isBefore(reserve.getEndDate()) || reserveLaboratory.getStartDate().isEqual(reserve.getEndDate())))
                     || ((reserveLaboratory.getEndDate().isBefore(reserve.getEndDate()) || reserveLaboratory.getEndDate().isEqual(reserve.getEndDate()))
