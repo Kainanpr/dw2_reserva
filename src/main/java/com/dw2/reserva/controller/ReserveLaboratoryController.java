@@ -71,11 +71,11 @@ public class ReserveLaboratoryController {
         } catch (ThereIsReserveForEquipmentException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário para o equipamento!");
+                    .body("Já existe uma reserva neste horário para equipamentos do laboratório!");
         } catch (ThereIsReserveLaboratoryException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
+                    .body("Já existe uma reserva neste horário para o laborátorio!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
@@ -121,11 +121,11 @@ public class ReserveLaboratoryController {
         } catch (ThereIsReserveForEquipmentException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário para o equipamento!");
+                    .body("Já existe uma reserva neste horário para equipamentos do laboratório!");
         } catch (ThereIsReserveLaboratoryException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
-                    .body("Já existe uma reserva neste horário para o laborátorio que o equipamento pertence!");
+                    .body("Já existe uma reserva neste horário para o laborátorio!");
         } catch (UnableToReserveException ex) {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
