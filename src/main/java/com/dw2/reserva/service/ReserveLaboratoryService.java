@@ -9,14 +9,12 @@ import com.dw2.reserva.persistence.repository.ReserveLaboratoryRepository;
 import com.dw2.reserva.service.exception.ObjectNotFoundException;
 import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
 import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
-import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -63,13 +61,6 @@ public class ReserveLaboratoryService {
     }
 
     private void checkForReservation(ReserveLaboratory reserveLaboratory) {
-        final LocalDateTime now = LocalDateTime.now(clock);
-
-        // Correcting daylight(DST) saving time in 2019
-        if (reserveLaboratory.getStartDate().minusHours(47).isBefore(now)) {
-            throw new UnableToReserveException("Reservation allowed only 48 hours in advance");
-        }
-
         final Laboratory requestedLaboratory = laboratoryRepository.getById(reserveLaboratory.getLaboratory().getId());
         final List<ReserveLaboratory> reserveLaboratoryList = reserveLaboratoryRepository.getAll();
         final List<ReserveEquipment> reserveEquipmentList = reserveEquipmentRepository.getAll();

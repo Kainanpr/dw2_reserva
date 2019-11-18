@@ -8,7 +8,6 @@ import com.dw2.reserva.service.ReserveLaboratoryService;
 import com.dw2.reserva.service.UserService;
 import com.dw2.reserva.service.exception.ThereIsReserveForEquipmentException;
 import com.dw2.reserva.service.exception.ThereIsReserveLaboratoryException;
-import com.dw2.reserva.service.exception.UnableToReserveException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -76,10 +75,6 @@ public class ReserveLaboratoryController {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Já existe uma reserva neste horário para o laborátorio!");
-        } catch (UnableToReserveException ex) {
-            LOGGER.error("{}", ex.getMessage());
-            return ResponseEntity.badRequest()
-                    .body("Reserva permitida com apenas 48 horas de antecedência!");
         }
     }
 
@@ -126,10 +121,6 @@ public class ReserveLaboratoryController {
             LOGGER.error("{}", ex.getMessage());
             return ResponseEntity.badRequest()
                     .body("Já existe uma reserva neste horário para o laborátorio!");
-        } catch (UnableToReserveException ex) {
-            LOGGER.error("{}", ex.getMessage());
-            return ResponseEntity.badRequest()
-                    .body("Reserva permitida com apenas 48 horas de antecedência!");
         }
     }
 }

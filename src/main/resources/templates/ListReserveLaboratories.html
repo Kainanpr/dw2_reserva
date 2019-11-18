@@ -198,6 +198,16 @@
             return;
         }
 
+        if (moment(startDate).isBefore(moment().add(48, 'hours').format('YYYY-MM-DDTHH:mm'))) {
+            alert("Erro: Reserva permitida com apenas 48 horas de antecedência!");
+            return;
+        }
+
+        if (moment(endDate).isAfter(moment(startDate).add(6, 'hours').format('YYYY-MM-DDTHH:mm'))) {
+            alert("Erro: O tempo máximo de reserva é de 6 horas!");
+            return;
+        }
+
         $.ajax({
             url: '/reserve-laboratories',
             type: 'POST',
@@ -255,6 +265,16 @@
 
         if (moment(endDate).isSameOrBefore(startDate)) {
             alert("Erro: Preencha a saída com uma data no futuro!");
+            return;
+        }
+
+        if (moment(startDate).isBefore(moment().add(48, 'hours').format('YYYY-MM-DDTHH:mm'))) {
+            alert("Erro: Reserva permitida com apenas 48 horas de antecedência!");
+            return;
+        }
+
+        if (moment(endDate).isAfter(moment(startDate).add(6, 'hours').format('YYYY-MM-DDTHH:mm'))) {
+            alert("Erro: O tempo máximo de reserva é de 6 horas!");
             return;
         }
 
