@@ -248,6 +248,11 @@
         var userId = $('#userIdUpdate').val();
         var laboratoryId = $('#laboratoryIdUpdate').val();
 
+        if (!startDate || !endDate) {
+            alert("Erro: Informações faltando!");
+            return;
+        }
+
         if (moment(endDate).isSameOrBefore(startDate)) {
             alert("Erro: Preencha a saída com uma data no futuro!");
             return;
