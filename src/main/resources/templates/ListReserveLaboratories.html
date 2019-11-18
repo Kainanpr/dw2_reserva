@@ -188,7 +188,7 @@
         var userId = $('#userId').val();
         var laboratoryId = $('#laboratoryId').val();
 
-        if (!userId || !laboratoryId) {
+        if (!userId || !laboratoryId || !startDate || !endDate) {
             alert("Erro: Informações faltando!");
             return;
         }
