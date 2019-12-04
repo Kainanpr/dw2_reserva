@@ -4,16 +4,16 @@
     <jdbc>
         <!-- Dummy configurations for generating the classes in a local setup; these settings should not match real,
         production settings -->
-        <driver>com.mysql.cj.jdbc.Driver</driver>
-        <url>jdbc:mysql://localhost:3306/dw2_reserva?useSSL=false&amp;serverTimezone=UTC</url>
-        <user>dw2_reserva</user>
+        <driver>org.hsqldb.jdbcDriver</driver>
+        <url>jdbc:hsqldb:hsql://localhost:9001/dw2_reserva?useSSL=false&amp;serverTimezone=UTC</url>
+        <user>SA</user>
         <password></password>
     </jdbc>
 
     <generator>
         <name>org.jooq.codegen.JavaGenerator</name>
         <database>
-            <name>org.jooq.meta.mysql.MySQLDatabase</name>
+            <name>org.hsqldb.jdbcDriver</name>
             <includes>.*</includes>
             <!-- Ignore Flyway tables -->
             <excludes>FLYWAY_SCHEMA_HISTORY</excludes>

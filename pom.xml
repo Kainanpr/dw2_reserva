@@ -62,7 +62,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
-        <!-- Database: jOOQ, MySQL and Flyway. Also includes spring-boot-starter-jdbc as dependency -->
+        <!-- Database: jOOQ, HSQLDB and Flyway. Also includes spring-boot-starter-jdbc as dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jooq</artifactId>
@@ -80,10 +80,11 @@
         </dependency>
 
         <!-- Scope runtime: classes should be available at runtime, but should not be used directly in compile-time -->
+        <!-- https://mvnrepository.com/artifact/org.hsqldb/hsqldb -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <scope>runtime</scope>
+            <groupId>org.hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <version>2.4.1</version>
         </dependency>
 
         <!-- Bootstrap and Jquery -->

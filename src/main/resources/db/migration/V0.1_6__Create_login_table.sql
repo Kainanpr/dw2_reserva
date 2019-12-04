@@ -1,8 +1,6 @@
 create table login (
-  email varchar(50) not null,
-  password varchar(255) not null,
-
-  constraint user_uk_email unique key (email)
+  email VARCHAR(50) not null,
+  password VARCHAR(255) not null
 );
 
 insert into login (email, password) values
