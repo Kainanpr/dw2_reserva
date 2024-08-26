@@ -22,7 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
         <skip.jooq.generation>true</skip.jooq.generation>
-        <springfox.version>2.9.2</springfox.version>
+        <springfox.version>2.10.0</springfox.version>
         <sonar.coverage.exclusions>
             src/main/java/com/dw2/reserva/ReservaApplication.java
             ,src/main/java/com/dw2/reserva/persistence/jooq/**/*
